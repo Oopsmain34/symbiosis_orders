@@ -1,0 +1,24 @@
+
+create database db;
+use db;
+
+create table category(ct_id int NOT NULL ,ct_name varchar(255) NOT NULL, CONSTRAINT category_pk PRIMARY KEY (ct_id));
+insert into category values(10,'Electronics'),(20,'Clothing'),(30,'Footwear'),(40,'Books'),(50,'Furniture');
+
+create table subcategory(s_id int NOT NULL ,s_name varchar(255) NOT NULL,ct_id int NOT NULL, CONSTRAINT category_pk PRIMARY KEY (s_id), CONSTRAINT category_fk FOREIGN KEY (ct_id) REFERENCES category(ct_id));
+insert into subcategory values(1,"TV",10),(2,"laptop",10),(3,"phone",10),(4,"shirt",20),(5,"jeans",20),(6,"shoes",30),(7,"slippers",30),(8,"novel",40),(9,"magazine",40),(10,"table",50),(11,"chair",50);
+
+create table product(p_id int NOT NULL ,p_name varchar(255) NOT NULL, p_price int NOT NULL, ct_id int NOT NULL,s_id int NOT NULL, CONSTRAINT product_pk PRIMARY KEY (p_id), CONSTRAINT product_fk FOREIGN KEY (ct_id) REFERENCES category(ct_id),CONSTRAINT product_fk1 FOREIGN KEY (s_id) REFERENCES subcategory(s_id));
+insert into product values(101,"1.08 m CU7700 Crystal 4K UHD Smart TV",45000,10,1),
+(102,"iPhone15",79900,10,3),(103,"HP Pavilion 15",64094,10,2),
+(104,"Men's Casual Shirt",800,20,4),(105,"Baggy Jeans",2000,20,5),
+(106,"Campus Flash Lifestyle Shoes",2500,30,6),(107,"FLITE",500,30,7),
+(108,"Don't Believe Everything You Think",200,40,8),(109,"The Reckoner Magazine",331,40,9),
+(110,"Office table",4599,50,10),(111,"Puffy Stool Chair",5000,50,11);
+insert into product values(112,"tv",50000,10,1);
+insert into product values(113,"demin shirt",1100,20,4);
+
+select * from product p, subcategory s, category c where p.ct_id= c.ct_id and p.s_id=s.s_id order by c.ct_id;
+
+select p.p_id,p.p_name,p.p_price,p.ct_id,p.s_id,s.s_name,c.ct_name from product p, subcategory s, category c where p.ct_id= c.ct_id and p.s_id=s.s_id order by c.ct_id;
+select * from category;
