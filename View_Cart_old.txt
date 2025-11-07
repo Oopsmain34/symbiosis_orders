@@ -1,0 +1,101 @@
+import React from 'react'
+import Axios from "axios";
+import {Form,Button,Container,Table} from 'react-bootstrap'
+
+class View_Cart extends React.Component
+{
+  constructor(props)
+  { 
+   super(props);
+   this.state = { "gross":0,"tax":0,"net":0,mylist:[] }
+
+  
+   
+  }
+ 
+  componentDidMount()
+  {
+    Axios.get("http://localhost:4200/showcart").then(
+        res=> this.setState({mylist:res.data}) );
+  }
+ 
+ calculate = e => {
+   
+  var gross=0;
+  var tax=0;
+  var net=0;
+  var i;
+  for(i=0;i<this.state.mylist.length;i++)
+  {
+    gross+= this.state.mylist[i].product_price;
+  }
+  tax = gross * 12 /100;
+  net = gross - tax;
+  this.setState({"gross":gross,"tax":tax,"net":net});
+
+ }
+
+onAddcart = e => {
+    e.preventDefault();
+    const id = e.target.id;
+    const qty = 1;
+    console.log(qty);
+    
+ const data={"id":id,"qty":qty};
+        Axios.post("http://localhost:4200/productaddcart",data).then(
+res=> console.log("Added to Cart") );
+
+  
+  };
+
+
+   render()
+    {
+        return(
+            <div>
+<Container>
+                 <h2 align="center"> Cart Details </h2>
+              
+        <hr/>    
+<input type="button" value="show gross" onClick={this.calculate} />
+
+<Table striped bordered hover> 
+<thead>
+<th> ID</th> <th> Name </th> <th> Price </th> <th>Quantity</th><th>Amount</th><th>Action</th>
+</thead>
+<tbody>
+                        {this.state.mylist.map((item,index)=>{
+                            
+                            return(
+                                <tr key={index}>
+                                    <td>{item.product_id}</td>
+                                    <td>{item.product_name}</td>
+                                    <td>{item.product_price}</td>
+                                    <td>{item.qty}</td>
+                                    <td>{item.product_price * item.qty}</td>
+                                <td>
+                                 
+                             <Button variant="danger" type="button"  id=                       {item.product_id}
+                      onClick={this.onAddcart}>
+    Delete
+  </Button>      
+                                 
+</td>
+
+
+                                    </tr>
+                            );
+                        })}
+<tr><th colspan="5"> Gross Amount {this.state.gross} Tax @12% {this.state.tax} Net Payable {this.state.net}  </th></tr>
+                        
+        </tbody>
+</Table>
+
+</Container>
+            </div>
+             );
+     }
+
+}
+
+export default View_Cart;
